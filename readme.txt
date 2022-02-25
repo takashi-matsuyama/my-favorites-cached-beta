@@ -1,11 +1,11 @@
-=== My Favorites ===
+=== My Favorites Cached Beta ===
 Contributors: takashimatsuyama
 Donate link:
 Tags: favorites, likes, accessibility, favorite posts
 Requires at least: 4.8
-Tested up to: 5.8
+Tested up to: 5.9
 Requires PHP: 5.4.0
-Stable tag: 1.4.0
+Stable tag: 0.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,13 +53,17 @@ This plugin is [developed on GitHub](https://github.com/takashi-matsuyama/my-fav
 
 == Installation ==
 
+It seems to be working with cached websites, probably in my environment. However, I have not verified it from various perspectives and it is just a test code to accomplish one task.  It is quite possible that this change may cause loss of traditional functionality or other bugs.
+Therefore, I cannot yet merge the changes of this issue into the official WordPress.org directory, but we would like to test it for future use and verify it in this repository as I review the specification.
+If you want to test this code, please do so in a test environment. It may cause bugs and various problems.
+
 1. Upload `my-favorites` to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Use shortcodes to display the favorite posts list and an icon for save and a menu for link to list.
 
 == Changelog ==
 
-= 1.4.0 =
-Add a load more button and a shortcode attribute excerpt="" in the list view.
+= 0.0.0 =
+Update: Initial test.
 
-See the [release notes on GitHub](https://github.com/takashi-matsuyama/my-favorites/releases).
+See the [release notes on GitHub](https://github.com/takashi-matsuyama/my-favorites-cached-beta/releases).
