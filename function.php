@@ -11,6 +11,10 @@ class CCC_My_Favorite
 {
 
   const CCC_MY_FAVORITE_POST_IDS = 'ccc_my_favorite_post_ids';
+  const CCC_MY_FAVORITE_UPDATE_ACTION = 'ccc_my_favorite-update-action';
+  const CCC_MY_FAVORITE_GET_ACTION = 'ccc_my_favorite-get-action';
+  const CCC_MY_FAVORITE_LIST_ACTION = 'ccc_my_favorite-list-action';
+  const CCC_WP_LOCALIZE_AJAX_ACTION = 'ccc_wp_localize_ajax-action';
 
   /*** Initial execution ***/
   public function __construct()
@@ -18,17 +22,16 @@ class CCC_My_Favorite
     add_action('wp_enqueue_scripts', array($this, 'jquery_check'));
     add_action('wp_enqueue_scripts', array($this, 'select_styles'));
     add_action('wp_enqueue_scripts', array($this, 'select_scripts'));
-    add_action('wp_ajax_ccc_my_favorite-update-action', array($this, 'usermeta_my_favorite_update'));
-    add_action('wp_ajax_ccc_my_favorite-get-action', array($this, 'usermeta_my_favorite_get'));
+    add_action('wp_ajax_' . self::CCC_MY_FAVORITE_UPDATE_ACTION, array($this, 'usermeta_my_favorite_update'));
+    add_action('wp_ajax_' . self::CCC_MY_FAVORITE_GET_ACTION, array($this, 'usermeta_my_favorite_get'));
 
     add_action('wp_enqueue_scripts', array($this, 'list_styles'));
     add_action('wp_enqueue_scripts', array($this, 'list_scripts'));
-    add_action('wp_ajax_ccc_my_favorite-list-action', array($this, 'list_posts_action'));
-    add_action('wp_ajax_nopriv_ccc_my_favorite-list-action', array($this, 'list_posts_action'));
+    add_action('wp_ajax_' . self::CCC_MY_FAVORITE_LIST_ACTION, array($this, 'list_posts_action'));
+    add_action('wp_ajax_nopriv_' . self::CCC_MY_FAVORITE_LIST_ACTION, array($this, 'list_posts_action'));
 
-
-    add_action('wp_ajax_ccc_wp_localize_ajax-action', array($this, 'ccc_wp_localize_ajax'));
-    add_action('wp_ajax_nopriv_ccc_wp_localize_ajax-action', array($this, 'ccc_wp_localize_ajax'));
+    add_action('wp_ajax_' . self::CCC_WP_LOCALIZE_AJAX_ACTION, array($this, 'ccc_wp_localize_ajax'));
+    add_action('wp_ajax_nopriv_' . self::CCC_WP_LOCALIZE_AJAX_ACTION, array($this, 'ccc_wp_localize_ajax'));
   } //endfunction
 
   public function jquery_check()
@@ -47,6 +50,22 @@ class CCC_My_Favorite
     $file = 'select.js';
     wp_register_script($handle, CCCMYFAVORITE_PLUGIN_URL . '/assets/' . $file, array('jquery'), CCCMYFAVORITE_PLUGIN_VERSION, true);
     wp_enqueue_script($handle);
+    wp_localize_script(
+      $handle,
+      'CCC_MY_FAVORITE',
+      array(
+        'api'    => admin_url('admin-ajax.php'),
+        'user_logged_in' => 'Get it with Ajax',
+        'action_update' => self::CCC_MY_FAVORITE_UPDATE_ACTION,
+        'nonce_update' => 'Get it with Ajax',
+        'action_get' => self::CCC_MY_FAVORITE_GET_ACTION,
+        'nonce_get' => 'Get it with Ajax',
+        'action_list' => self::CCC_MY_FAVORITE_LIST_ACTION,
+        'nonce_list' => 'Get it with Ajax',
+        'action_wp_localize' => self::CCC_WP_LOCALIZE_AJAX_ACTION,
+      )
+    );
+    /*
     $action_update = 'ccc_my_favorite-update-action';
     wp_localize_script(
       $handle,
@@ -68,6 +87,7 @@ class CCC_My_Favorite
         //'nonce'  => wp_create_nonce($action_get)
       )
     );
+    */
   } //endfunction
 
   /*** お気に入りの投稿をユーザーメタ（usermeta）に追加 ***/
@@ -110,6 +130,7 @@ class CCC_My_Favorite
     $handle = 'ccc_my_favorite-list';
     $file = 'list.js';
     wp_register_script($handle, CCCMYFAVORITE_PLUGIN_URL . '/assets/' . $file, array('jquery'), CCCMYFAVORITE_PLUGIN_VERSION, true);
+    /*
     $action = 'ccc_my_favorite-list-action';
     wp_localize_script(
       $handle,
@@ -120,6 +141,7 @@ class CCC_My_Favorite
         //'nonce'  => wp_create_nonce($action)
       )
     );
+    */
   } //endfunction
 
   public function list_posts_action()
@@ -139,9 +161,9 @@ class CCC_My_Favorite
   {
     $data = array(
       'user_logged_in' => is_user_logged_in(),
-      'nonce_get' => wp_create_nonce('ccc_my_favorite-get-action'),
-      'nonce_update' => wp_create_nonce('ccc_my_favorite-update-action'),
-      'nonce_list' => wp_create_nonce('ccc_my_favorite-list-action'),
+      'nonce_update' => wp_create_nonce(self::CCC_MY_FAVORITE_UPDATE_ACTION),
+      'nonce_get' => wp_create_nonce(self::CCC_MY_FAVORITE_GET_ACTION),
+      'nonce_list' => wp_create_nonce(self::CCC_MY_FAVORITE_LIST_ACTION),
     );
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
     die();

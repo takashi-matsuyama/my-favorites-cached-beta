@@ -4,7 +4,7 @@
  * Plugin Name: My Favorites Cached Beta
  * Plugin URI: https://github.com/takashi-matsuyama/my-favorites-cached-beta
  * Description: Save user's favorite posts and list them.
- * Version: 0.0.0
+ * Version: 0.0.1
  * Requires at least: 4.8
  * Requires PHP: 5.4.0
  * Author: Takashi Matsuyama

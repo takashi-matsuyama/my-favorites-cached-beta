@@ -2,7 +2,7 @@
  * Author: Takashi Matsuyama
  * Author URI: https://profiles.wordpress.org/takashimatsuyama/
  * Description: WordPressでお気に入りの投稿の一覧を表示
- * Version: 0.0.0 or later
+ * Version: 0.0.1 or later
  */
 
 /*
@@ -22,8 +22,7 @@ var CCC = CCC || {};
 
   var data_set = {}; // オブジェクトのキーに変数を使用：ES5までの書き方（IE11以下への対応のため）
   $.when(
-    (data_set["action"] = CCC_MY_FAVORITE_LIST.action),
-    //data_set['nonce'] = CCC_MY_FAVORITE_LIST.nonce,
+    (data_set["action"] = CCC_MY_FAVORITE.action_list),
     (data_set[CCC.favorite.storage_key()] = localStorage.getItem(
       CCC.favorite.storage_key()
     )), // ローカルストレージから指定したキー（CCC.favoriteのstorage_key関数を呼び出し）の値を取得;
@@ -36,20 +35,20 @@ var CCC = CCC || {};
     // 後処理
     /*** ロード：初期 ***/
     $.ajax({
-      url: CCC_MY_FAVORITE_GET.api, // admin-ajax.phpのパスをローカライズ（wp_localize_script関数）
+      url: CCC_MY_FAVORITE.api, // admin-ajax.phpのパスをローカライズ（wp_localize_script関数）
       type: "POST",
       data: {
-        action: "ccc_wp_localize_ajax-action", // wp_ajax_フックのサフィックス
+        action: CCC_MY_FAVORITE.action_wp_localize, // wp_ajax_フックのサフィックス
       },
     })
       .fail(function () {
-        console.log("user_logged_in : ajax error");
+        console.log("ccc_wp_localize_ajax-action : ajax error");
       })
       .done(function (response) {
         var obj = JSON.parse(response);
         data_set["nonce"] = obj.nonce_list;
-        console.log("nonce_list : " + obj.nonce_list);
-        console.log("ccc-posts_per_page : " + data_set["ccc-posts_per_page"]);
+        //console.log("nonce_list : " + obj.nonce_list);
+        //console.log("ccc-posts_per_page : " + data_set["ccc-posts_per_page"]);
         ccc_my_favorite_list_ajax(data_set); // お気に入りの投稿をリスト表示するためのAjax関数を呼び出し
       });
   });
@@ -58,7 +57,7 @@ var CCC = CCC || {};
   function ccc_my_favorite_list_ajax(data_set) {
     $.ajax({
       type: "POST",
-      url: CCC_MY_FAVORITE_LIST.api,
+      url: CCC_MY_FAVORITE.api,
       data: data_set,
     })
       .fail(function () {
@@ -110,19 +109,19 @@ var CCC = CCC || {};
     ); // ローカルストレージから指定したキーの値を再取得
     data_set["looplength"] = $("." + list_post).filter(":visible").length; // 再取得：現在表示中の投稿数を再取得（注意：動的要素のためオブジェクト変数に格納する事は出来ない）
     $.ajax({
-      url: CCC_MY_FAVORITE_GET.api, // admin-ajax.phpのパスをローカライズ（wp_localize_script関数）
+      url: CCC_MY_FAVORITE.api, // admin-ajax.phpのパスをローカライズ（wp_localize_script関数）
       type: "POST",
       data: {
-        action: "ccc_wp_localize_ajax-action", // wp_ajax_フックのサフィックス
+        action: CCC_MY_FAVORITE.action_wp_localize, // wp_ajax_フックのサフィックス
       },
     })
       .fail(function () {
-        console.log("user_logged_in : ajax error");
+        console.log("ccc_wp_localize_ajax : ajax error");
       })
       .done(function (response) {
         var obj = JSON.parse(response);
         data_set["nonce"] = obj.nonce_list;
-        console.log("nonce_list : " + obj.nonce_list);
+        //console.log("nonce_list : " + obj.nonce_list);
         ccc_my_favorite_list_ajax(data_set); // お気に入りの投稿をリスト表示するためのAjax関数を呼び出し
       });
   });
@@ -151,19 +150,19 @@ var CCC = CCC || {};
           ); // ローカルストレージから指定したキーの値を再取得
           data_set["looplength"] = null;
           $.ajax({
-            url: CCC_MY_FAVORITE_GET.api, // admin-ajax.phpのパスをローカライズ（wp_localize_script関数）
+            url: CCC_MY_FAVORITE.api, // admin-ajax.phpのパスをローカライズ（wp_localize_script関数）
             type: "POST",
             data: {
-              action: "ccc_wp_localize_ajax-action", // wp_ajax_フックのサフィックス
+              action: CCC_MY_FAVORITE.action_wp_localize, // wp_ajax_フックのサフィックス
             },
           })
             .fail(function () {
-              console.log("user_logged_in : ajax error");
+              console.log("ccc_wp_localize_ajax : ajax error");
             })
             .done(function (response) {
               var obj = JSON.parse(response);
               data_set["nonce"] = obj.nonce_list;
-              console.log("nonce_list : " + obj.nonce_list);
+              //console.log("nonce_list : " + obj.nonce_list);
               ccc_my_favorite_list_ajax(data_set); // お気に入りの投稿をリスト表示するためのAjax関数を呼び出し
             });
         }, 600);

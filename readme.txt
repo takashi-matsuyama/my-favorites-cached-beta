@@ -5,7 +5,7 @@ Tags: favorites, likes, accessibility, favorite posts
 Requires at least: 4.8
 Tested up to: 5.9
 Requires PHP: 5.4.0
-Stable tag: 0.0.0
+Stable tag: 0.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -64,6 +64,6 @@ If you want to test this code, please do so in a test environment. It may cause 
 == Changelog ==
 
 = 0.0.0 =
-Update: Initial test.
+Update: Clean up the code a bit.
 
 See the [release notes on GitHub](https://github.com/takashi-matsuyama/my-favorites-cached-beta/releases).

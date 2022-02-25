@@ -2,7 +2,7 @@
  * Author: Takashi Matsuyama
  * Author URI: https://profiles.wordpress.org/takashimatsuyama/
  * Description: WordPressでお気に入りの投稿をローカルストレージとMySQLのユーザーメタに保存（クリックで保存と削除を切替/一括削除）
- * Version: 0.0.0 or later
+ * Version: 0.0.1 or later
  */
 
 /* グローバルネームスペース */
@@ -93,11 +93,8 @@ var CCC = CCC || {};
         }
         favorite_value_array_str = favorite_value_array.join(","); // 配列要素の連結・結合：配列を連結して1つの文字列に変換
         /* ログインユーザーでは無い場合 */
-        console.log(
-          "CCC_MY_FAVORITE_UPDATE.user_logged_in : " +
-            CCC_MY_FAVORITE_UPDATE.user_logged_in
-        );
-        if (CCC_MY_FAVORITE_UPDATE.user_logged_in == false) {
+        //console.log("CCC_MY_FAVORITE.user_logged_in : " + CCC_MY_FAVORITE.user_logged_in);
+        if (CCC_MY_FAVORITE.user_logged_in == false) {
           localStorage.setItem(favorite_key, favorite_value_array_str); // 指定したキーのローカルストレージにお気に入りの投稿の文字列データを保存
         }
         /* お気に入りの投稿の保存数を更新 */
@@ -114,11 +111,11 @@ var CCC = CCC || {};
       /*** 実行本体：お気に入りの投稿をMySQLのユーザーメタ（wp_usermeta）に保存する関数 ****/
       function my_favorite_update_ajax(value) {
         $.ajax({
-          url: CCC_MY_FAVORITE_UPDATE.api, // admin-ajax.phpのパスをローカライズ（wp_localize_script関数）
+          url: CCC_MY_FAVORITE.api, // admin-ajax.phpのパスをローカライズ（wp_localize_script関数）
           type: "POST",
           data: {
-            action: CCC_MY_FAVORITE_UPDATE.action, // wp_ajax_フックのサフィックス
-            nonce: CCC_MY_FAVORITE_UPDATE.nonce, // wp nonce
+            action: CCC_MY_FAVORITE.action_update, // wp_ajax_フックのサフィックス
+            nonce: CCC_MY_FAVORITE.nonce_update, // wp nonce
             post_ids: value,
           },
         })
@@ -135,21 +132,18 @@ var CCC = CCC || {};
         e.preventDefault();
         var this_elm = $(this);
         /* ログインユーザーでは無い場合 */
-        console.log(
-          "CCC_MY_FAVORITE_UPDATE.user_logged_in : " +
-            CCC_MY_FAVORITE_UPDATE.user_logged_in
-        );
-        if (CCC_MY_FAVORITE_UPDATE.user_logged_in == false) {
+        //console.log("CCC_MY_FAVORITE.user_logged_in : " + CCC_MY_FAVORITE.user_logged_in);
+        if (CCC_MY_FAVORITE.user_logged_in == false) {
           favorite_value = localStorage.getItem(favorite_key); // クリックする度にローカルストレージから指定したキーの値を再取得
           my_favorite_toggle(this_elm); // 実行本体：お気に入りの投稿の選択を切替える関数を呼び出し
           //console.log(localStorage);
         } else {
           $.ajax({
-            url: CCC_MY_FAVORITE_GET.api, // admin-ajax.phpのパスをローカライズ（wp_localize_script関数）
+            url: CCC_MY_FAVORITE.api, // admin-ajax.phpのパスをローカライズ（wp_localize_script関数）
             type: "POST",
             data: {
-              action: CCC_MY_FAVORITE_GET.action, // wp_ajax_フックのサフィックス
-              nonce: CCC_MY_FAVORITE_GET.nonce, // wp nonce
+              action: CCC_MY_FAVORITE.action_get, // wp_ajax_フックのサフィックス
+              nonce: CCC_MY_FAVORITE.nonce_get, // wp nonce
             },
           })
             .fail(function () {
@@ -168,11 +162,8 @@ var CCC = CCC || {};
       $(document).on("click", "." + CCC.favorite.delete_btn, function (e) {
         e.preventDefault();
         /* ログインユーザーでは無い場合 */
-        console.log(
-          "CCC_MY_FAVORITE_UPDATE.user_logged_in : " +
-            CCC_MY_FAVORITE_UPDATE.user_logged_in
-        );
-        if (CCC_MY_FAVORITE_UPDATE.user_logged_in == false) {
+        //console.log("CCC_MY_FAVORITE.user_logged_in : " + CCC_MY_FAVORITE.user_logged_in);
+        if (CCC_MY_FAVORITE.user_logged_in == false) {
           localStorage.removeItem(favorite_key); // ローカルストレージから指定したデータ（キーと値）を削除
           //console.log(localStorage);
         } else {
@@ -186,41 +177,38 @@ var CCC = CCC || {};
   }; // サブネームスペース
 
   $.ajax({
-    url: CCC_MY_FAVORITE_GET.api, // admin-ajax.phpのパスをローカライズ（wp_localize_script関数）
+    url: CCC_MY_FAVORITE.api, // admin-ajax.phpのパスをローカライズ（wp_localize_script関数）
     type: "POST",
     data: {
-      action: "ccc_wp_localize_ajax-action", // wp_ajax_フックのサフィックス
+      action: CCC_MY_FAVORITE.action_wp_localize, // wp_ajax_フックのサフィックス
     },
   })
     .fail(function () {
-      console.log("user_logged_in : ajax error");
+      console.log("ccc_wp_localize_ajax : ajax error");
     })
     .done(function (response) {
       var obj = JSON.parse(response);
-      CCC_MY_FAVORITE_UPDATE.user_logged_in = obj.user_logged_in;
-      CCC_MY_FAVORITE_UPDATE.nonce = obj.nonce_update;
-      CCC_MY_FAVORITE_GET.nonce = obj.nonce_get;
-      console.log("user_logged_in : " + obj.user_logged_in);
-      console.log("nonce_update : " + obj.nonce_update);
-      console.log("nonce_get : " + obj.nonce_get);
+      CCC_MY_FAVORITE.user_logged_in = obj.user_logged_in;
+      CCC_MY_FAVORITE.nonce_update = obj.nonce_update;
+      CCC_MY_FAVORITE.nonce_get = obj.nonce_get;
+      //console.log("user_logged_in : " + obj.user_logged_in);
+      //console.log("nonce_update : " + obj.nonce_update);
+      //console.log("nonce_get : " + obj.nonce_get);
 
       /* ログインユーザーでは無い場合 */
-      console.log(
-        "CCC_MY_FAVORITE_UPDATE.user_logged_in : " +
-          CCC_MY_FAVORITE_UPDATE.user_logged_in
-      );
-      if (CCC_MY_FAVORITE_UPDATE.user_logged_in == false) {
+      //console.log("CCC_MY_FAVORITE.user_logged_in : " + CCC_MY_FAVORITE.user_logged_in);
+      if (CCC_MY_FAVORITE.user_logged_in == false) {
         var favorite_key = CCC.favorite.storage_key(); // お気に入りの投稿のストレージキーの名前を変数に格納（CCC.favoriteのstorage_key関数を呼び出し）
         var favorite_value = localStorage.getItem(favorite_key); // ローカルストレージから指定したキーの値を取得
         CCC.favorite.initial(favorite_value); // CCC.favoriteのinitial関数を呼び出し
         CCC.favorite.action(favorite_key, favorite_value); // CCC.favoriteのaction関数を呼び出し
       } else {
         $.ajax({
-          url: CCC_MY_FAVORITE_GET.api, // admin-ajax.phpのパスをローカライズ（wp_localize_script関数）
+          url: CCC_MY_FAVORITE.api, // admin-ajax.phpのパスをローカライズ（wp_localize_script関数）
           type: "POST",
           data: {
-            action: CCC_MY_FAVORITE_GET.action, // wp_ajax_フックのサフィックス
-            nonce: CCC_MY_FAVORITE_GET.nonce, // wp nonce
+            action: CCC_MY_FAVORITE.action_get, // wp_ajax_フックのサフィックス
+            nonce: CCC_MY_FAVORITE.nonce_get, // wp nonce
           },
         })
           .fail(function () {
